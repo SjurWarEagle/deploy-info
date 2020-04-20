@@ -17,6 +17,7 @@
     "dotenv": "8.2.0",
     "github-api": "3.3.0",
     "compare-semver": "1.1.0",
+    "clipboardy": "2.3.0",
     "semver": "7.3.2",
     "ts-node": "8.8.2"
   },

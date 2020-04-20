@@ -117,6 +117,24 @@ const start = async () => {
   await outputVersionInfo(configs);
 };
 
+function extractUsableSemVerFromTag(tag, repository: string, branch: string) {
+  if (!semver.valid(tag.name)) {
+    console.log(repository + " " + branch);
+    console.log("Problem detecting version of ", tag.name);
+    let tmp = tag.name.toLowerCase().replace("release-v", "");
+    tmp = tmp.substr(0, 4) + "." + tmp.substr(5, 2) + "." + tmp.substr(7);
+    // console.log("tmp", tmp);
+    if (semver.valid(tmp)) {
+      console.log(`\tusing: '${tmp}' to be semver conform.`);
+      return tmp;
+    }
+    tmp = "0.0.0";
+    console.log(`\tusing: '${tmp}' to be semver conform.`);
+    return tmp;
+  }
+  return tag.name;
+}
+
 const getHighestTag = async (
   repository: string,
   branch: string,
@@ -130,21 +148,8 @@ const getHighestTag = async (
 
   // console.log("tags", tags);
   const allTags = tags.data
-    // .filter((tag) => tag.name.indexOf("release") != -1)
     .map((tag) => {
-      if (!semver.valid(tag.name)) {
-        console.log("Problem detecting version of ", tag.name);
-        let tmp = tag.name.toLowerCase().replace("release-v", "");
-        tmp = tmp.substr(0, 4) + "." + tmp.substr(5, 2) + "." + tmp.substr(7);
-        // console.log("tmp", tmp);
-        if (semver.valid(tmp)) {
-          console.log("\tusing:", tmp);
-          return tmp;
-        }
-        console.log("\tusing:", "0.0.0");
-        return "0.0.0";
-      }
-      return tag.name;
+      return extractUsableSemVerFromTag(tag, repository, branch);
     });
 
   // console.log("allTags", repository, allTags);
