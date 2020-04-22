@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { outputVersionInfo } from "./output";
-import { configs } from "./config";
+import { configs } from "./config/config";
 import { IConfigEntry } from "./i-config-entry";
 import * as compareSemver from "compare-semver";
 import * as semver from "semver";
@@ -147,10 +147,9 @@ const getHighestTag = async (
   });
 
   // console.log("tags", tags);
-  const allTags = tags.data
-    .map((tag) => {
-      return extractUsableSemVerFromTag(tag, repository, branch);
-    });
+  const allTags = tags.data.map((tag) => {
+    return extractUsableSemVerFromTag(tag, repository, branch);
+  });
 
   // console.log("allTags", repository, allTags);
   const highestVersion = compareSemver.max(allTags);
