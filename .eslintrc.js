@@ -22,7 +22,7 @@ module.exports = {
     // https://github.com/typescript-eslint/typescript-eslint/issues/363
     "no-unused-vars": 0, // disable rule
     "no-mixed-spaces-and-tabs": 0, // disable rule
-    indent: ["error", "tab"],
+    indent: ["error", 2],
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "single"],
     semi: ["error", "always"],
