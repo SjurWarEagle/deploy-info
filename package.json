@@ -8,6 +8,7 @@
     "lint": "eslint src/**/* --format visualstudio",
     "lint fix": "eslint src/**/* --format visualstudio --fix",
     "prettier": "prettier --write src",
+    "test": "jest",
     "update-dependencies": "ncu -u"
   },
   "keywords": [],
@@ -24,12 +25,15 @@
   },
   "devDependencies": {
     "@types/node": "13.13.2",
+    "@types/jest": "25.2.1",
     "@typescript-eslint/eslint-plugin": "2.29.0",
     "@typescript-eslint/parser": "2.29.0",
     "eslint": "6.8.0",
     "npm-check-updates": "4.1.2",
     "prettier": "2.0.5",
     "tslib": "1.11.1",
+    "jest": "25.4.0",
+    "ts-jest": "25.4.0",
     "typescript": "3.8.3"
   }
 }

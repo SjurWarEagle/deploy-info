@@ -153,13 +153,22 @@ export class GitActions {
     return (await this.octokit.rateLimit.get()).data.rate.remaining;
   }
 
-  private extractUsableSemVerFromTag(tag, repository: string, branch: string) {
+  private extractUsableSemVerFromTag(
+    tag,
+    repository: string,
+    branch: string,
+  ): string {
     if (!semver.valid(tag.name)) {
       console.log(repository + ' ' + branch);
       console.log('Problem detecting version of ', tag.name);
       let tmp = tag.name.toLowerCase().replace(/release-v/gi, '');
-      tmp = `${tmp.substr(0, 4)}.${tmp.substr(5, 2)}.${tmp.substr(7)}`;
-      // console.log("tmp", tmp);
+      // console.log('tmp', tmp);
+      if (semver.valid(tmp)) {
+        console.log(`\tusing: '${tmp}' to be semver conform.`);
+        return tmp;
+      }
+      tmp = `${+tmp.substr(0, 4)}.${+tmp.substr(4, 2)}.${+tmp.substr(6, 8)}`;
+      // console.log('tmp', tmp);
       if (semver.valid(tmp)) {
         console.log(`\tusing: '${tmp}' to be semver conform.`);
         return tmp;
