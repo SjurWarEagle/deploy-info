@@ -50,11 +50,12 @@ export async function outputVersionInfo(configs: IConfigEntry[]) {
   let result = '';
   result += `_generated ${new Date().toLocaleString()}_\n`;
   result += '\n';
-  result += '|Project|Live / Master|Integration / Develop|DayDiff|Note|\n';
-  result += '| :--- | ---: | ---: | ---: | :--- |\n';
+  result +=
+    '|Project|Live / Master|Integration / Develop|DayDiff|CommitDiff|Note|\n';
+  result += '| :--- | ---: | ---: | ---: | ---: | :--- |\n';
   configs
     .sort((entryA, entryB) =>
-      entryA.repository.localeCompare(entryB.repository)
+      entryA.repository.localeCompare(entryB.repository),
     )
     .forEach((config) => {
       let note = determineNoteText(config);
@@ -63,6 +64,7 @@ export async function outputVersionInfo(configs: IConfigEntry[]) {
        ${config.master.version} | \
        ${config.develop.version} | \
        ${determineDateDifferenceMasterDevelop(config)} | \
+       ${config.develop.numberOfCommits - config.master.numberOfCommits} | \
        ${note} | \
        \n`;
     });
@@ -73,17 +75,19 @@ export async function outputVersionInfo(configs: IConfigEntry[]) {
   result +=
     '* day diff is the difference of last commit in development vs master\n';
   result +=
+    '* commit diff is the difference of last commit in development vs master\n';
+  result +=
     '* release-v2020407112300000 will be shown as 2020.40.7112300000 as it is no valid semver\n';
   result += '\n';
 
   console.log('');
   console.log(
-    '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n'
+    '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n',
   );
   console.log(result);
   clipboardy.writeSync(result);
   console.log(
-    '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n'
+    '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n',
   );
   console.log('');
   console.log('Info: result was copied to clipboard');

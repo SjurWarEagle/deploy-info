@@ -6,9 +6,11 @@ export interface IConfigEntry {
   master?: {
     version: string;
     lastCommitDate: string;
+    numberOfCommits?: number;
   };
   develop?: {
     version: string;
     lastCommitDate: string;
+    numberOfCommits?: number;
   };
 }

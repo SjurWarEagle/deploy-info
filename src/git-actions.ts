@@ -124,19 +124,40 @@ export class GitActions {
     return highestVersion ? highestVersion : 'unknown';
   }
 
-  private async getNumberOfCommits(
-    tag,
+  public async getNumberOfCommits(
     repository: string,
     branch: string,
+    owner: string,
   ): Promise<number> {
-    return -1;
+    let loops = 0;
+    let cnt = 0;
+    const cntPerPage = 100;
+    // loop until we have a not full page
+    do {
+      const commits = await this.octokit.repos.listCommits({
+        sha: branch,
+        owner: owner,
+        repo: repository,
+        per_page: cntPerPage,
+        page: loops++,
+      });
+      // console.log('commits', commits);
+      // console.log('commits.data.length', commits.data.length);
+      cnt = commits.data.length;
+    } while (cnt == cntPerPage);
+
+    return cntPerPage * (loops - 1) + cnt;
+  }
+
+  async getRemainingQuota(): Promise<number> {
+    return (await this.octokit.rateLimit.get()).data.rate.remaining;
   }
 
   private extractUsableSemVerFromTag(tag, repository: string, branch: string) {
     if (!semver.valid(tag.name)) {
       console.log(repository + ' ' + branch);
       console.log('Problem detecting version of ', tag.name);
-      let tmp = tag.name.toLowerCase().replace('release-v', '');
+      let tmp = tag.name.toLowerCase().replace(/release-v/gi, '');
       tmp = `${tmp.substr(0, 4)}.${tmp.substr(5, 2)}.${tmp.substr(7)}`;
       // console.log("tmp", tmp);
       if (semver.valid(tmp)) {

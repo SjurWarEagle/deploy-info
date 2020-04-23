@@ -11,12 +11,12 @@ async function fillCommitDates(config: IConfigEntry) {
   config.develop.lastCommitDate = await gitActions.getLastCommitDate(
     config.repository,
     'develop',
-    config.owner
+    config.owner,
   );
   config.master.lastCommitDate = await gitActions.getLastCommitDate(
     config.repository,
     'master',
-    config.owner
+    config.owner,
   );
 }
 async function collectVersionInfo() {
@@ -26,19 +26,43 @@ async function collectVersionInfo() {
     config.develop.version = await gitActions.getHighestTag(
       config.repository,
       'develop',
-      config.owner
+      config.owner,
     );
     config.master.version = await gitActions.getHighestTag(
       config.repository,
       'master',
-      config.owner
+      config.owner,
+    );
+  }
+}
+async function collectCommitNumbers() {
+  for (const config of configs) {
+    await fillCommitDates(config);
+
+    config.master.numberOfCommits = await gitActions.getNumberOfCommits(
+      config.repository,
+      'master',
+      config.owner,
+    );
+
+    config.develop.numberOfCommits = await gitActions.getNumberOfCommits(
+      config.repository,
+      'develop',
+      config.owner,
     );
   }
 }
 
 const start = async () => {
+  console.log(
+    `Limit: ${await gitActions.getRemainingQuota()} API calls remaining.`,
+  );
   await collectVersionInfo();
+  await collectCommitNumbers();
   await outputVersionInfo(configs);
+  console.log(
+    `Limit: ${await gitActions.getRemainingQuota()} API calls remaining.`,
+  );
 };
 
 start().catch(console.error);
