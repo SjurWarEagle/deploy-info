@@ -32,5 +32,5 @@ jobs:
         passed: [Install dependencies]
       - get: dependency-cache
         passed: [Install dependencies]
-      - run:
-          path: hello_hapi_source/concourse/build.sh
+      - task: run the test suite
+        file: hello_hapi_source/concourse/run_test.yml
