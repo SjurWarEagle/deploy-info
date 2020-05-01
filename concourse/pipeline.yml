@@ -32,5 +32,5 @@ jobs:
         passed: [Install dependencies]
       - get: dependency-cache
         passed: [Install dependencies]
-      - task: run the test suite
-        file: deploy-info/concourse/build.sh
+      - run:
+        path: hello_hapi_source/concourse/build.sh
