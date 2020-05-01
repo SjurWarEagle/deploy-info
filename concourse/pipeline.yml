@@ -33,4 +33,4 @@ jobs:
       - get: dependency-cache
         passed: [Install dependencies]
       - task: run the test suite
-        file: deploy-info/concourse/run_tests.yml
+        file: deploy-info/concourse/build.sh
