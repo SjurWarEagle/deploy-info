@@ -8,8 +8,8 @@ image_resource:
     tag: latest
 
 inputs:
-  - name: hello_hapi
+  - name: hello_hapi_source
   - name: dependency-cache
 
 run:
-  file: deploy-info/concourse/build.sh
+  file: hello_hapi_source/concourse/build.sh
