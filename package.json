@@ -9,6 +9,8 @@
     "lint fix": "eslint src/**/* --format visualstudio --fix",
     "prettier": "prettier --write src",
     "test": "jest",
+    "concourse-deploy": "c:/Dropbox/PortableApps/fly.exe -t tutorial set-pipeline -c concourse/pipeline.yml -p version-info",
+    "concourse-unpause-pipeline": "c:/Dropbox/PortableApps/fly.exe -t tutorial unpause-pipeline -p version-info",
     "update-dependencies": "ncu -u"
   },
   "keywords": [],
