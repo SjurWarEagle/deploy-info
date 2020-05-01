@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: node
+    tag: latest
+
+inputs:
+  - name: hello_hapi
+  - name: dependency-cache
+
+run:
+  file: deploy-info/concourse/build.sh

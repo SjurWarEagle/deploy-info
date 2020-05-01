@@ -7,7 +7,7 @@ resource_types:
       tag: latest
 
 resources:
-  - name: hello_hapi
+  - name: hello_hapi_source
     type: git
     source: &repo-source
       uri: https://github.com/SjurWarEagle/deploy-info
@@ -22,15 +22,15 @@ resources:
 jobs:
   - name: Install dependencies
     plan:
-      - get: hello_hapi
+      - get: hello_hapi_source
         trigger: true
       - get: dependency-cache
   - name: Run tests
     plan:
-      - get: hello_hapi
+      - get: hello_hapi_source
         trigger: true
         passed: [Install dependencies]
       - get: dependency-cache
         passed: [Install dependencies]
       - task: run the test suite
-        file: hello_hapi/ci/tasks/run_tests.yml
+        file: deploy-info/concourse/run_tests.yml
