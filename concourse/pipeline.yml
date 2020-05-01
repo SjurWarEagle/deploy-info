@@ -33,4 +33,4 @@ jobs:
       - get: dependency-cache
         passed: [Install dependencies]
       - run:
-        path: hello_hapi_source/concourse/build.sh
+          path: hello_hapi_source/concourse/build.sh
