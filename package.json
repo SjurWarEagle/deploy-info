@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/starter.ts",
+    "start txt": "ts-node src/starter.ts --format='txt'",
+    "start markdown": "ts-node src/starter.ts --format='md'",
     "lint": "eslint src/**/* --format visualstudio",
     "lint fix": "eslint src/**/* --format visualstudio --fix",
     "prettier": "prettier --write src",
     "test": "jest",
-    "concourse-deploy": "c:/Dropbox/PortableApps/fly.exe -t tutorial set-pipeline -c concourse/pipeline.yml -p version-info",
+    "concourse-deploy": "env-cmd -f .env --use-shell c:/Dropbox/PortableApps/fly.exe -t tutorial set-pipeline -p version-info --non-interactive -c concourse/pipeline.yml --var \"GITHUB_USER=%GITHUB_USER%\" --var \"GITHUB_TOKEN=%GITHUB_TOKEN%\" --var \"GIST_URL=%GIST_URL%\"",
     "concourse-destroy": "c:/Dropbox/PortableApps/fly -t tutorial destroy-pipeline -p version-info",
     "concourse-unpause-pipeline": "c:/Dropbox/PortableApps/fly.exe -t tutorial unpause-pipeline -p version-info",
     "update-dependencies": "ncu -u"
@@ -18,24 +19,29 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@octokit/rest": "17.5.1",
+    "@octokit/rest": "17.6.0",
     "dotenv": "8.2.0",
     "github-api": "3.3.0",
     "compare-semver": "1.1.0",
     "clipboardy": "2.3.0",
     "semver": "7.3.2",
-    "ts-node": "8.9.0"
+    "table": "5.4.6",
+    "yargs": "15.3.1",
+    "ts-node": "8.9.1"
   },
   "devDependencies": {
-    "@types/node": "13.13.2",
+    "@types/node": "13.13.4",
+    "@types/table": "5.0.0",
     "@types/jest": "25.2.1",
-    "@typescript-eslint/eslint-plugin": "2.29.0",
-    "@typescript-eslint/parser": "2.29.0",
+    "@typescript-eslint/eslint-plugin": "2.30.0",
+    "@typescript-eslint/parser": "2.30.0",
     "eslint": "6.8.0",
     "npm-check-updates": "4.1.2",
     "prettier": "2.0.5",
+    "cross-env-file": "1.0.0",
+    "env-cmd": "10.1.0",
     "tslib": "1.11.1",
-    "jest": "25.4.0",
+    "jest": "25.5.3",
     "ts-jest": "25.4.0",
     "typescript": "3.8.3"
   }

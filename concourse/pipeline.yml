@@ -1,36 +1,57 @@
 ---
-resource_types:
-  - name: npm-cache
-    type: docker-image
-    source:
-      repository: ymedlop/npm-cache-resource
-      tag: latest
-
 resources:
-  - name: hello_hapi_source
+  - name: every-5min
+    type: time
+    icon: clock-outline
+    source: {interval: 5m}
+  - name: deploy-info-git
     type: git
-    source: &repo-source
-      uri: https://github.com/SjurWarEagle/deploy-info
-      branch: master
-  - name: dependency-cache
-    type: npm-cache
+    icon: github-circle
     source:
-      <<: *repo-source
-      paths:
-        - package.json
+      uri: https://github.com/SjurWarEagle/deploy-info
+  - name: nodejs.org-git
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/nodejs/nodejs.org.git
+#  - name: inTheMorning
+#    icon: alarm
+#    type: time
+#    source:
+#      start: 0:00 AM
+#      stop:  0:05 AM
+#      location: Europe/Berlin
 
 jobs:
-  - name: Install dependencies
+  - name: test
+    public: true
     plan:
-      - get: hello_hapi_source
+      - get: every-5min
         trigger: true
-      - get: dependency-cache
-  - name: Run tests
-    plan:
-      - get: hello_hapi_source
+      - get: nodejs.org-git
         trigger: true
-        passed: [Install dependencies]
-      - get: dependency-cache
-        passed: [Install dependencies]
-      - task: run the test suite
-        file: hello_hapi_source/concourse/run_test.yml
+#      - get: inTheMorning
+#        trigger: false
+      - get: deploy-info-git
+        trigger: true
+      - task: run-tests
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source: { repository: node, tag: "12" }
+          inputs:
+            - name: nodejs.org-git
+          run:
+            path: /bin/sh
+            args:
+              - -c
+              - |
+                export GITHUB_USER=((GITHUB_USER))
+                export GITHUB_TOKEN=((GITHUB_TOKEN))
+                git clone https://github.com/SjurWarEagle/deploy-info
+                cd deploy-info
+                curl ((GIST_URL)) > src/config/config.ts
+                node --version
+                npm install
+                npm run start

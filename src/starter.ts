@@ -1,9 +1,10 @@
-import { outputVersionInfo } from './output';
+import { outputAsAscii, outputAsMarkdown } from './output';
 import { configs } from './config/config';
 import { IConfigEntry } from './i-config-entry';
 import { GitActions } from './git-actions';
 
 require('dotenv').config();
+const argv = require('yargs').argv;
 
 const gitActions = new GitActions();
 
@@ -19,6 +20,7 @@ async function fillCommitDates(config: IConfigEntry) {
     config.owner,
   );
 }
+
 async function collectVersionInfo() {
   for (const config of configs) {
     await fillCommitDates(config);
@@ -35,6 +37,7 @@ async function collectVersionInfo() {
     );
   }
 }
+
 async function collectCommitNumbers() {
   for (const config of configs) {
     await fillCommitDates(config);
@@ -59,7 +62,13 @@ const start = async () => {
   );
   await collectVersionInfo();
   await collectCommitNumbers();
-  await outputVersionInfo(configs);
+  if (argv.format && argv.format.toLowerCase() === 'txt') {
+    await outputAsAscii(configs);
+  } else if (argv.format && argv.format.toLowerCase() === 'md') {
+    await outputAsMarkdown(configs);
+  } else {
+    await outputAsAscii(configs);
+  }
   console.log(
     `Limit: ${await gitActions.getRemainingQuota()} API calls remaining.`,
   );
