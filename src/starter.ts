@@ -63,11 +63,11 @@ const start = async () => {
   await collectVersionInfo();
   await collectCommitNumbers();
   if (argv.format && argv.format.toLowerCase() === 'txt') {
-    await outputAsAscii(configs);
+    await outputAsAscii(configs, !!argv.clipboard);
   } else if (argv.format && argv.format.toLowerCase() === 'md') {
-    await outputAsMarkdown(configs);
+    await outputAsMarkdown(configs, !!argv.clipboard);
   } else {
-    await outputAsAscii(configs);
+    await outputAsAscii(configs, !!argv.clipboard);
   }
   console.log(
     `Limit: ${await gitActions.getRemainingQuota()} API calls remaining.`,

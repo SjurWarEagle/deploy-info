@@ -1,5 +1,6 @@
 import { IConfigEntry } from './i-config-entry';
 import * as clipboardy from 'clipboardy';
+import { table } from 'table';
 
 function determineDateDifferenceMasterDevelop(config: IConfigEntry): number {
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
@@ -46,7 +47,73 @@ function determineNoteText(config: IConfigEntry): string {
   return note;
 }
 
-export async function outputVersionInfo(configs: IConfigEntry[]) {
+export async function outputAsAscii(
+  configs: IConfigEntry[],
+  copyToClipboard: boolean,
+) {
+  let data = [];
+
+  // table.setHeading(
+  //   'Project',
+  //   'Live / Master',
+  //   'Integration / Develop',
+  //   'DayDiff',
+  //   'CommitDiff',
+  //   'Note',
+  // );
+  //
+  configs
+    .sort((entryA, entryB) =>
+      entryA.repository.localeCompare(entryB.repository),
+    )
+    .forEach((config) => {
+      let note = determineNoteText(config);
+      data.push([
+        config.repository,
+        config.master.version,
+        config.develop.version,
+        determineDateDifferenceMasterDevelop(config),
+        config.develop.numberOfCommits - config.master.numberOfCommits,
+        note,
+      ]);
+    });
+
+  console.log();
+  let result = '';
+  result += `_generated ${new Date().toLocaleString()}_\n`;
+  result += table(data);
+  result += '\n';
+  result += 'Info:\n';
+  result += '* version are based on the tags of the branch\n';
+  result +=
+    '* day diff is the difference of last commit in development vs master\n';
+  result +=
+    '* commit diff is the difference of last commit in development vs master\n';
+  result +=
+    '* release-v2020407112300000 will be shown as 2020.40.7112300000 as it is no valid semver\n';
+  result += '\n';
+
+  console.log('');
+  console.log(
+    '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n',
+  );
+  console.log(result);
+  if (copyToClipboard) {
+    clipboardy.writeSync(result);
+  }
+  console.log(
+    '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n',
+  );
+  if (copyToClipboard) {
+    console.log('');
+    console.log('Info: result was copied to clipboard');
+  }
+}
+
+export async function outputAsMarkdown(
+  configs: IConfigEntry[],
+  copyToClipboard: boolean,
+) {
   let result = '';
   result += `_generated ${new Date().toLocaleString()}_\n`;
   result += '\n';
@@ -85,10 +152,14 @@ export async function outputVersionInfo(configs: IConfigEntry[]) {
     '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n',
   );
   console.log(result);
-  clipboardy.writeSync(result);
+  if (copyToClipboard) {
+    clipboardy.writeSync(result);
+  }
   console.log(
     '---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---✂---\n\n',
   );
-  console.log('');
-  console.log('Info: result was copied to clipboard');
+  if (copyToClipboard) {
+    console.log('');
+    console.log('Info: result was copied to clipboard');
+  }
 }
