@@ -37,7 +37,7 @@
     "@types/jest": "26.0.20",
     "@typescript-eslint/eslint-plugin": "4.17.0",
     "@typescript-eslint/parser": "4.17.0",
-    "eslint": "7.21.0",
+    "eslint": "7.22.0",
     "npm-check-updates": "11.2.2",
     "prettier": "2.2.1",
     "cross-env-file": "1.0.0",
